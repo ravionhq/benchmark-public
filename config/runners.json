@@ -3359,6 +3359,75 @@
         "ec2-cpu"
       ],
       "note": "Graviton2, burstable (CPU credits), 2 GB per vCPU. EC2 CPU sweep only."
+    },
+    {
+      "id": "ravion-x64-2x8",
+      "provider": "Ravion",
+      "arch": "x64",
+      "vcpu": 2,
+      "ramGiB": 8,
+      "label": "ravion/ee=posthog-bench/type=sandbox/cpu=2/memory=8/disk=80/disk_cache=off/id={run_id}-{run_attempt}",
+      "suites": [
+        "hardware",
+        "rust",
+        "node",
+        "cache",
+        "burst",
+        "cpu-daily"
+      ],
+      "cacheActions": [
+        "actions/cache"
+      ],
+      "variant": "2 vCPU",
+      "note": "Ravion sandbox (Firecracker microVM), us-east-2, BALANCED performance profile. disk_cache=off: every job starts from a clean disk, like the other providers.",
+      "suiteNotes": {
+        "node": "8 GB is not enough for the opencode typecheck, even with turbo limited to 4 tasks: TypeScript processes are killed out of memory (exit 137). 16 GB passes."
+      },
+      "suiteSkips": {
+        "docker": "Not run: the PostHog Docker build needs more than 8 GB of memory; it ran out of memory on 8 GB runners."
+      }
+    },
+    {
+      "id": "ravion-x64",
+      "provider": "Ravion",
+      "arch": "x64",
+      "vcpu": 4,
+      "ramGiB": 16,
+      "label": "ravion/ee=posthog-bench/type=sandbox/cpu=4/memory=16/disk=80/disk_cache=off/id={run_id}-{run_attempt}",
+      "suites": [
+        "hardware",
+        "rust",
+        "node",
+        "docker",
+        "cache",
+        "burst"
+      ],
+      "cacheActions": [
+        "actions/cache"
+      ],
+      "variant": "4 vCPU",
+      "note": "Ravion sandbox (Firecracker microVM), us-east-2, BALANCED performance profile. disk_cache=off: every job starts from a clean disk, like the other providers."
+    },
+    {
+      "id": "ravion-x64-8x32",
+      "provider": "Ravion",
+      "arch": "x64",
+      "vcpu": 8,
+      "ramGiB": 32,
+      "label": "ravion/ee=posthog-bench/type=sandbox/cpu=8/memory=32/disk=80/disk_cache=off/id={run_id}-{run_attempt}",
+      "suites": [
+        "hardware",
+        "rust",
+        "node",
+        "docker",
+        "cache",
+        "burst"
+      ],
+      "cacheActions": [
+        "actions/cache"
+      ],
+      "variant": "8 vCPU",
+      "note": "Ravion sandbox (Firecracker microVM), us-east-2, BALANCED performance profile. disk_cache=off: every job starts from a clean disk, like the other providers."
     }
   ]
 }

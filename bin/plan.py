@@ -60,7 +60,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 # no entry of theirs appeared; GitHub, Namespace, StarSling, CodeBuild and
 # every Warpbuild runner's did). Warpbuild's own action (WarpBuilds/cache)
 # stores in Warpbuild's storage, so only its actions/cache jobs share.
-REROUTES_ACTIONS_CACHE = {"RunsOn", "Blacksmith", "Ubicloud", "Avrea"}
+# Ravion: sandboxes serve the Actions cache API from S3 in the account.
+REROUTES_ACTIONS_CACHE = {"RunsOn", "Blacksmith", "Ubicloud", "Avrea", "Ravion"}
 
 
 # Shared cache jobs per wave (4 GiB each: 8 GiB in flight), and the waves
@@ -124,6 +125,11 @@ def unique_runs_on(label, job: str):
     (a failed launch, a missed webhook) the job left over waits for RunsOn to
     retry, minutes later. Other providers' labels, and label lists, are left
     as they are."""
+    if isinstance(label, str) and label.startswith("ravion/"):
+        # Ravion labels need an `id=` unique to each job (docs: "Unique
+        # labels"); it is the label's last segment, so extend it.
+        token = re.sub(r"[^a-z0-9-]+", "-", job.lower()).strip("-")
+        return f"{label}-{token}"
     if not isinstance(label, str) or not label.startswith("runs-on="):
         return label
     head, sep, rest = label.partition(",")

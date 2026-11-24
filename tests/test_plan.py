@@ -127,7 +127,7 @@ class UniqueLabels(unittest.TestCase):
         for suite in ("rust", "node", "docker", "hardware", "cache", "burst", "ec2-storage", "ec2-cpu", "cpu-daily"):
             rc, out, plan, err = run_plan(suite, None)
             self.assertEqual(rc, 0, f"{suite}: {err}")
-            labels = [j["label"] for j in plan["jobs"] if isinstance(j["label"], str) and j["label"].startswith("runs-on=")]
+            labels = [j["label"] for j in plan["jobs"] if isinstance(j["label"], str) and j["label"].startswith(("runs-on=", "ravion/"))]
             self.assertEqual(len(labels), len(set(labels)), suite)
 
     def test_other_providers_labels_are_untouched(self):
@@ -138,7 +138,7 @@ class UniqueLabels(unittest.TestCase):
             self.assertEqual(rc, 0, err)
             for j in plan["jobs"]:
                 catalog = next(r for r in RUNNERS if r["id"] == j["id"])["label"]
-                if isinstance(catalog, str) and catalog.startswith("runs-on="):
+                if isinstance(catalog, str) and catalog.startswith(("runs-on=", "ravion/")):
                     continue
                 fill = lambda v: v.replace("{run_id}", "0").replace("{run_attempt}", "1")
                 expected = [fill(x) for x in catalog] if isinstance(catalog, list) else fill(catalog)

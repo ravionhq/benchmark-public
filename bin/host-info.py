@@ -238,6 +238,17 @@ def runs_on():
     return values or None
 
 
+def ravion():
+    """The EC2 host a Ravion sandbox ran on (the guest can't see EC2 metadata).
+    None on other providers."""
+    values = {
+        "hostInstanceType": os.environ.get("RAVION_HOST_INSTANCE_TYPE"),
+        "hostCpuModel": os.environ.get("RAVION_HOST_CPU_MODEL"),
+    }
+    values = {k: v for k, v in values.items() if v}
+    return values or None
+
+
 def network_org():
     try:
         with urllib.request.urlopen("https://ipinfo.io/json", timeout=4) as resp:
@@ -287,6 +298,7 @@ def main():
         },
         "ec2": imds(),
         "runsOn": runs_on(),
+        "ravion": ravion(),
         "network": network_org(),
         "runner": {
             "name": os.environ.get("RUNNER_NAME"),
